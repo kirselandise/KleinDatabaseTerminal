@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLEIN AGENCY - CLASSIFIED DATABASE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #000;
+            color: #00ff00;
+            font-family: 'Courier Prime', monospace;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        .terminal-container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.05);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #00ff00; }
+            to { box-shadow: 0 0 20px #00ff00, 0 0 30px #00ff00; }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+        
+        .search-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            text-transform: uppercase;
+        }
+        
+        .input-group input {
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 12px 20px;
+            font-family: inherit;
+            font-size: 1.1em;
+            width: 300px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 15px #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .search-btn {
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 12px 30px;
+            font-family: inherit;
+            font-size: 1.1em;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+            box-shadow: 0 0 15px #00ff00;
+        }
+        
+        .error-message {
+            color: #ff0000;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        
+        .file-container {
+            display: none;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.02);
+            position: relative;
+        }
+        
+        .file-header {
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .file-header h2 {
+            color: #0099ff;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        
+        .file-meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .file-content {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #000;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 16px;
+            font-family: inherit;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+        
+        .classification-red {
+            color: #ff0000;
+            font-weight: bold;
+        }
+        
+        .classification-blue {
+            color: #0099ff;
+            font-weight: bold;
+        }
+        
+        .classification-green {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        
+        .section-header {
+            color: #0099ff;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            text-transform: uppercase;
+        }
+        
+        .warning {
+            color: #ff0000;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+    
+    <div class="terminal-container">
+        <div id="searchView">
+            <div class="header">
+                <h1>KLEIN AGENCY</h1>
+                <div class="subtitle">CLASSIFIED DATABASE TERMINAL</div>
+                <div class="subtitle">MARCAINNE OPERATIONS CENTER</div>
+            </div>
+            
+            <div class="search-container">
+                <div class="input-group">
+                    <label for="fileInput">ENTER FILE DESIGNATION:</label>
+                    <input type="text" id="fileInput" placeholder="XXXX-XXXXXX" maxlength="20">
+                </div>
+                <button class="search-btn" onclick="searchFile()">ACCESS FILE</button>
+                <div id="errorMessage" class="error-message"></div>
+            </div>
+        </div>
+        
+        <div id="fileView" class="file-container">
+            <button class="back-btn" onclick="goBack()">← BACK</button>
+            <div class="file-header">
+                <h2 id="fileName"></h2>
+                <div class="file-meta" id="fileMeta"></div>
+            </div>
+            <div class="file-content" id="fileContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Database of files
+        const fileDatabase = {
+            '2772-ΔTLWND': {
+                name: 'OPERATION DELTA TAILWIND',
+                meta: 'CLASSIFICATION: TOP SECRET | DATE: 2024.03.15 | AGENT: K-7742',
+                content: `<span class="classification-red">*** TOP SECRET - EYES ONLY ***</span>
+
+<span class="section-header">MISSION BRIEFING:</span>
+Operation Delta Tailwind has been compromised. Asset "Windbreaker" went dark during reconnaissance of the Nexus Corporation facility in Sector 7.
+
+<span class="section-header">SITUATION REPORT:</span>
+- Last contact: 0347 hours, Grid Reference: 42.7N 83.2W
+- Extraction team deployed at 0400 hours
+- <span class="classification-red">HOSTILE SUPERS CONFIRMED ON SITE</span>
+
+<span class="section-header">THREAT ASSESSMENT:</span>
+<span class="classification-blue">PRIMARY TARGET:</span> Dr. Helena Voss (Codename: MINDBRIDGE)
+- Abilities: Telepathic manipulation, memory alteration
+- Threat Level: OMEGA-CLASS
+- Status: ACTIVE
+
+<span class="warning">WARNING: DO NOT ENGAGE WITHOUT PSYCHIC SHIELDING</span>
+
+<span class="section-header">NEXT ACTIONS:</span>
+1. Activate Protocol Seven
+2. Deploy Psi-dampening field generators
+3. Initiate asset recovery procedures
+
+<span class="classification-green">AUTHORIZATION REQUIRED FOR FIELD DEPLOYMENT</span>
+
+Agent Handler: Director Sarah Klein
+Emergency Contact: EMERGENCY-ALPHA-9`
+            },
+            
+            '1149-SENTINEL': {
+                name: 'SUBJECT FILE: SENTINEL',
+                meta: 'CLASSIFICATION: SECRET | DATE: 2024.02.28 | PSYCHOLOGIST: Dr. M. Rivera',
+                content: `<span class="classification-blue">*** CONFIDENTIAL PERSONNEL FILE ***</span>
+
+<span class="section-header">SUBJECT IDENTIFICATION:</span>
+Name: Marcus Thompson
+Codename: SENTINEL  
+Age: 32
+Status: ACTIVE FIELD AGENT
+
+<span class="section-header">ABILITIES PROFILE:</span>
+<span class="classification-green">PRIMARY:</span> Enhanced reflexes and danger precognition
+- Reaction time: 0.03 seconds
+- Precognitive window: 4-7 seconds
+- Accuracy rating: 94.7%
+
+<span class="classification-blue">SECONDARY:</span> Tactical analysis enhancement
+- Pattern recognition: Superior
+- Threat assessment: Exceptional
+- Team coordination: Outstanding
+
+<span class="section-header">PSYCHOLOGICAL EVALUATION:</span>
+Subject displays typical stress markers for precognitive individuals. 
+Recommended therapy sessions: Bi-weekly
+Sleep quality: POOR (chronic nightmares)
+
+<span class="warning">NOTE: Subject reports "glimpses" extending beyond normal window. Monitoring recommended.</span>
+
+<span class="section-header">MISSION HISTORY:</span>
+- Operations completed: 47
+- Success rate: 100%
+- Civilian casualties: 0
+- Commendations: 12
+
+<span class="classification-green">CLEARED FOR OMEGA-LEVEL OPERATIONS</span>`
+            },
+            
+            '0891-BLACKOUT': {
+                name: 'INCIDENT REPORT: THE BLACKOUT',
+                meta: 'CLASSIFICATION: TOP SECRET | DATE: 2024.01.12 | INVESTIGATOR: Agent K-3301',
+                content: `<span class="classification-red">*** CLASSIFIED INCIDENT REPORT ***</span>
+
+<span class="section-header">INCIDENT DESIGNATION:</span>
+Event: THE BLACKOUT
+Location: Downtown Marcainne
+Duration: 00:23:47
+Affected Area: 2.3 square kilometers
+
+<span class="section-header">INITIAL REPORT:</span>
+At 21:47 hours, all electronic systems within a 2.3km radius experienced simultaneous failure. This included:
+- Power grid infrastructure
+- Communications equipment  
+- Vehicle electronics
+- Emergency services systems
+
+<span class="warning">CASUALTY REPORT: 0 DEATHS, 23 INJURIES (TRAFFIC RELATED)</span>
+
+<span class="section-header">INVESTIGATION FINDINGS:</span>
+<span class="classification-blue">CAUSE:</span> Uncontrolled electromagnetic pulse from unknown super
+- Signature does not match any known registered individuals
+- Pattern suggests involuntary manifestation
+- <span class="classification-red">SUBJECT REMAINS AT LARGE</span>
+
+<span class="section-header">CONTAINMENT STATUS:</span>
+Area secured at 22:11 hours
+Cover story: Transformer explosion at power substation
+Media containment: SUCCESSFUL
+Public awareness: MINIMAL
+
+<span class="section-header">ONGOING ACTIONS:</span>
+1. Manhunt for EMP-capable individual
+2. Infrastructure hardening protocols activated  
+3. Monitoring of local hospitals for electrical burns
+
+<span class="classification-green">Investigation continues under Agent Ramirez</span>`
+            }
+        };
+
+        function searchFile() {
+            const input = document.getElementById('fileInput').value.trim().toUpperCase();
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (!input) {
+                showError('FILE DESIGNATION REQUIRED');
+                return;
+            }
+            
+            if (fileDatabase[input]) {
+                displayFile(input, fileDatabase[input]);
+            } else {
+                showError('FILE NOT FOUND - ACCESS DENIED');
+            }
+        }
+        
+        function displayFile(fileId, fileData) {
+            document.getElementById('fileName').textContent = fileData.name;
+            document.getElementById('fileMeta').textContent = fileData.meta;
+            document.getElementById('fileContent').innerHTML = fileData.content;
+            
+            document.getElementById('searchView').style.display = 'none';
+            document.getElementById('fileView').style.display = 'block';
+        }
+        
+        function goBack() {
+            document.getElementById('fileView').style.display = 'none';
+            document.getElementById('searchView').style.display = 'block';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('errorMessage').textContent = '';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            setTimeout(() => {
+                errorDiv.textContent = '';
+            }, 3000);
+        }
+        
+        // Allow Enter key to search
+        document.getElementById('fileInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchFile();
+            }
+        });
+        
+        // Auto-focus input on load
+        window.onload = function() {
+            document.getElementById('fileInput').focus();
+        };
+    </script>
+</body>
+</html>
