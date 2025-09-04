@@ -232,7 +232,7 @@
     </div>
 
     <script>
-    function searchFile() {
+    async function searchFile() {
         let input = document.getElementById('fileInput').value.trim().toUpperCase();
 
         if (!input) {
@@ -243,9 +243,21 @@
         // Replace special characters
         input = normalizeInput(input);
 
-        // Construct URL and redirect
+        // Construct URL
         const targetUrl = `https://kirselandise.github.io/KleinDatabaseTerminal/${input}`;
-        window.location.href = targetUrl;
+
+        try {
+            // Check if file exists
+            const response = await fetch(targetUrl, { method: 'HEAD' });
+            if (response.ok) {
+                // Redirect if found
+                window.location.href = targetUrl;
+            } else {
+                showError('FILE NOT FOUND - ACCESS DENIED');
+            }
+        } catch (e) {
+            showError('FILE NOT FOUND - ACCESS DENIED');
+        }
     }
 
     function normalizeInput(text) {
@@ -256,16 +268,14 @@
             'Ρ': 'R',  // uppercase rho
             'ρ': 'R'   // lowercase rho
         };
-
         return text.replace(/[ΔΤτρΡ]/g, c => map[c] || c);
     }
 
     function showError(message) {
         const errorDiv = document.getElementById('errorMessage');
         errorDiv.textContent = message;
-        setTimeout(() => {
-            errorDiv.textContent = '';
-        }, 3000);
+        errorDiv.style.color = '#ff0000';
+        errorDiv.style.textShadow = '0 0 5px #ff0000';
     }
 
     // Allow Enter key to search
@@ -280,6 +290,7 @@
         document.getElementById('fileInput').focus();
     };
 </script>
+
 
 
 </body>
