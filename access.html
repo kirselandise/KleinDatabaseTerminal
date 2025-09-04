@@ -232,57 +232,55 @@
     </div>
 
     <script>
-        function searchFile() {
-            const input = document.getElementById('fileInput').value.trim().toUpperCase();
-            const errorDiv = document.getElementById('errorMessage');
-            
-            if (!input) {
-                showError('FILE DESIGNATION REQUIRED');
-                return;
-            }
-            
-            if (fileDatabase[input]) {
-                displayFile(input, fileDatabase[input]);
-            } else {
-                showError('FILE NOT FOUND - ACCESS DENIED');
-            }
+    function searchFile() {
+        let input = document.getElementById('fileInput').value.trim().toUpperCase();
+
+        if (!input) {
+            showError('FILE DESIGNATION REQUIRED');
+            return;
         }
-        
-        function displayFile(fileId, fileData) {
-            document.getElementById('fileName').textContent = fileData.name;
-            document.getElementById('fileMeta').textContent = fileData.meta;
-            document.getElementById('fileContent').innerHTML = fileData.content;
-            
-            document.getElementById('searchView').style.display = 'none';
-            document.getElementById('fileView').style.display = 'block';
-        }
-        
-        function goBack() {
-            document.getElementById('fileView').style.display = 'none';
-            document.getElementById('searchView').style.display = 'block';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('errorMessage').textContent = '';
-        }
-        
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            setTimeout(() => {
-                errorDiv.textContent = '';
-            }, 3000);
-        }
-        
-        // Allow Enter key to search
-        document.getElementById('fileInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchFile();
-            }
-        });
-        
-        // Auto-focus input on load
-        window.onload = function() {
-            document.getElementById('fileInput').focus();
+
+        // Replace special characters
+        input = normalizeInput(input);
+
+        // Construct URL and redirect
+        const targetUrl = `https://kirselandise.github.io/KleinDatabaseTerminal/${input}`;
+        window.location.href = targetUrl;
+    }
+
+    function normalizeInput(text) {
+        const map = {
+            'Δ': 'D',
+            'Τ': 'T',  // uppercase tau
+            'τ': 'T',  // lowercase tau
+            'Ρ': 'R',  // uppercase rho
+            'ρ': 'R'   // lowercase rho
         };
-    </script>
+
+        return text.replace(/[ΔΤτρΡ]/g, c => map[c] || c);
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        setTimeout(() => {
+            errorDiv.textContent = '';
+        }, 3000);
+    }
+
+    // Allow Enter key to search
+    document.getElementById('fileInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchFile();
+        }
+    });
+
+    // Auto-focus input on load
+    window.onload = function() {
+        document.getElementById('fileInput').focus();
+    };
+</script>
+
+
 </body>
 </html>
