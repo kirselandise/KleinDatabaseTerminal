@@ -216,41 +216,171 @@
                         }
 
                         .terminal-container {
-                        margin: 0 auto;
-                        text-align: center;
+                                margin: 0 auto;
+                                text-align: center;
                         }
 
                         /* Green caret inside the input */
                         .input-group input {
-                        caret-color: #00ff00;
+                                caret-color: #00ff00;
                         }
 
                         /* Layout wrapper so the underscore sits right after the box */
                         .input-wrapper {
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
                         }
 
                         /* Blinking underscore: hidden by default, shows when input is focused */
                         .blink-cursor {
-                        display: none;
-                        color: #00ff00;
-                        font-weight: 700;
-                        margin-left: 6px;
+                                display: none;
+                                color: #00ff00;
+                                font-weight: 700;
+                                margin-left: 6px;
                         }
 
                         /* Only show + animate while the input is focused */
-                        .input-group input:focus + .blink-cursor {
-                        display: inline-block;
-                        animation: blink 1s steps(2, start) infinite;
+                        .input-group input:focus+.blink-cursor {
+                                display: inline-block;
+                                animation: blink 1s steps(2, start) infinite;
                         }
 
                         /* Blink animation */
                         @keyframes blink {
-                        0%, 49% { opacity: 1; }
-                        50%, 100% { opacity: 0; }
+
+                                0%,
+                                49% {
+                                        opacity: 1;
+                                }
+
+                                50%,
+                                100% {
+                                        opacity: 0;
+                                }
                         }
+
+                        /* ===== LOADING OVERLAY ===== */
+                        .loading-overlay {
+                                position: fixed;
+                                inset: 0;
+                                display: none;
+                                /* shown via JS */
+                                align-items: center;
+                                justify-content: center;
+                                background: rgba(0, 0, 0, 0.85);
+                                z-index: 2000;
+                        }
+
+                        .loading-box {
+                                width: min(680px, 88vw);
+                                border: 2px solid #00ff00;
+                                background: rgba(0, 255, 0, 0.03);
+                                padding: 28px 24px;
+                                text-align: center;
+                                animation: glow 1.8s ease-in-out infinite alternate;
+                                box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.3);
+                        }
+
+                        .loading-title {
+                                font-size: 1.8rem;
+                                letter-spacing: 1px;
+                                text-shadow: 0 0 10px #00ff00;
+                                margin-bottom: 10px;
+                        }
+
+                        .loading-sub {
+                                opacity: 0.9;
+                                font-size: 1rem;
+                                margin-bottom: 20px;
+                        }
+
+                        /* ACCESSING FILE + blinking dots */
+                        .loading-line {
+                                display: inline-flex;
+                                align-items: baseline;
+                                gap: 6px;
+                                margin-bottom: 18px;
+                                font-size: 1.1rem;
+                                text-transform: uppercase;
+                        }
+
+                        .loading-dots {
+                                display: inline-block;
+                                overflow: hidden;
+                                width: 1ch;
+                                /* will “grow” to 3ch via steps */
+                                animation: dots 900ms steps(3, end) infinite;
+                        }
+
+                        .loading-dots::before {
+                                content: '...';
+                        }
+
+                        @keyframes dots {
+                                0% {
+                                        width: 0ch;
+                                }
+
+                                66% {
+                                        width: 2ch;
+                                }
+
+                                100% {
+                                        width: 3ch;
+                                }
+                        }
+
+                        /* Striped progress bar */
+                        .progress {
+                                height: 10px;
+                                border: 2px solid #00ff00;
+                                background: rgba(0, 255, 0, 0.06);
+                                overflow: hidden;
+                                margin: 8px auto 0;
+                                width: 100%;
+                                max-width: 560px;
+                        }
+
+                        .progress-bar {
+                                height: 100%;
+                                width: 0%;
+                                background:
+                                        repeating-linear-gradient(-45deg,
+                                                rgba(0, 255, 0, 0.8) 0 12px,
+                                                rgba(0, 255, 0, 0.4) 12px 24px);
+                                box-shadow: 0 0 12px rgba(0, 255, 0, 0.6);
+                                animation: load-fill 1.15s linear forwards, stripe-move 0.7s linear infinite;
+                        }
+
+                        @keyframes load-fill {
+                                from {
+                                        width: 0%;
+                                }
+
+                                to {
+                                        width: 100%;
+                                }
+                        }
+
+                        @keyframes stripe-move {
+                                from {
+                                        background-position: 0 0;
+                                }
+
+                                to {
+                                        background-position: 48px 0;
+                                }
+                        }
+
+                        /* tiny flicker line like a CRT */
+                        .loading-hr {
+                                height: 1px;
+                                background: linear-gradient(90deg, transparent, #00ff00, transparent);
+                                opacity: 0.35;
+                                margin: 12px 0 18px;
+                        }
+
                 }
         </style>
 </head>
@@ -267,29 +397,36 @@
                         </div>
 
                         <form id="accessForm" autocomplete="off" onsubmit="event.preventDefault(); searchFile();">
-                        <div class="input-group">
-                        <label for="fileInput">ENTER FILE DESIGNATION:</label>
+                                <div class="input-group">
+                                        <label for="fileInput">ENTER FILE DESIGNATION:</label>
 
-                        <!-- wrapper so we can place the blinking underscore right after the input -->
-                        <div class="input-wrapper">
-                        <input
-                                type="text"
-                                id="fileInput"
-                                placeholder="XXXX-XXXXXX"
-                                maxlength="20"
-                                autocomplete="off"
-                                spellcheck="false"
-                                autocapitalize="off"
-                                autocorrect="off"
-                                inputmode="latin"
-                        />
-                        <span class="blink-cursor" aria-hidden="true"></span>
-                        </div>
-                        </div>
+                                        <!-- wrapper so we can place the blinking underscore right after the input -->
+                                        <div class="input-wrapper">
+                                                <input type="text" id="fileInput" placeholder="XXXX-XXXXXX"
+                                                        maxlength="20" autocomplete="off" spellcheck="false"
+                                                        autocapitalize="off" autocorrect="off" inputmode="latin" />
+                                                <span class="blink-cursor" aria-hidden="true"></span>
+                                        </div>
+                                </div>
 
-                        <button class="search-btn" type="submit">ACCESS FILE</button>
+                                <button class="search-btn" type="submit">ACCESS FILE</button>
                         </form>
                         <div id="errorMessage" class="error-message"></div>
+
+                        <div id="loadingOverlay" class="loading-overlay" role="status" aria-live="polite">
+                                <div class="loading-box">
+                                        <div class="loading-title">KLEIN AGENCY</div>
+                                        <div class="loading-hr"></div>
+                                        <div class="loading-line">
+                                                <span>ACCESSING FILE</span><span class="loading-dots"
+                                                        aria-hidden="true"></span>
+                                        </div>
+                                        <div class="loading-sub">MARCAINNE OPERATIONS CENTER</div>
+                                        <div class="progress">
+                                                <div class="progress-bar"></div>
+                                        </div>
+                                </div>
+                        </div>
 
                 </div>
         </div>
@@ -313,7 +450,9 @@
                                 // Check if file exists
                                 const response = await fetch(targetUrl, { method: 'HEAD' });
                                 if (response.ok) {
-                                        // Redirect if found
+                                        // Show loading overlay for ~1.2s, then redirect
+                                        showLoadingOverlay();                 // turn it on + start animations
+                                        await sleep(1200);
                                         window.location.href = targetUrl;
                                 } else {
                                         showError('FILE NOT FOUND - ACCESS DENIED');
@@ -322,6 +461,31 @@
                                 showError('FILE NOT FOUND - ACCESS DENIED');
                         }
                 }
+
+                function showLoadingOverlay() {
+                        const overlay = document.getElementById('loadingOverlay');
+                        if (!overlay) return;
+                        overlay.style.display = 'flex';
+
+                        // Restart the progress animation each time (in case of multiple lookups)
+                        const bar = overlay.querySelector('.progress-bar');
+                        if (bar) {
+                                bar.style.animation = 'none';
+                                // Force reflow to restart CSS animation
+                                void bar.offsetWidth;
+                                bar.style.animation = 'load-fill 1.15s linear forwards, stripe-move 0.7s linear infinite';
+                        }
+                }
+
+                function hideLoadingOverlay() {
+                        const overlay = document.getElementById('loadingOverlay');
+                        if (overlay) overlay.style.display = 'none';
+                }
+
+                function sleep(ms) {
+                        return new Promise(res => setTimeout(res, ms));
+                }
+
 
                 function normalizeInput(text) {
                         const map = {
