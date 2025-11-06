@@ -451,7 +451,7 @@
                                 if (response.ok) {
                                         // Show loading overlay for ~1.2s, then redirect
                                         showLoadingOverlay();                 // turn it on + start animations
-                                        await sleep(1200);
+                                        await sleep(1500);
                                         window.location.href = targetUrl;
                                 } else {
                                         showError('FILE NOT FOUND - ACCESS DENIED');
@@ -472,7 +472,7 @@
                                 bar.style.animation = 'none';
                                 // Force reflow to restart CSS animation
                                 void bar.offsetWidth;
-                                bar.style.animation = 'load-fill 1.15s linear forwards, stripe-move 0.7s linear infinite';
+                                bar.style.animation = 'load-fill 1.45s linear forwards, stripe-move 0.7s linear infinite';
                         }
                 }
 
