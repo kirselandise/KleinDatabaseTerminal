@@ -88,6 +88,7 @@
                                 width: 300px;
                                 text-align: center;
                                 text-transform: uppercase;
+                                caret-color: #00ff00;
                         }
 
                         .input-group input:focus {
@@ -218,6 +219,39 @@
                         margin: 0 auto;
                         text-align: center;
                         }
+
+                        /* Green caret inside the input */
+                        .input-group input {
+                        caret-color: #00ff00;
+                        }
+
+                        /* Layout wrapper so the underscore sits right after the box */
+                        .input-wrapper {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        }
+
+                        /* Blinking underscore: hidden by default, shows when input is focused */
+                        .blink-cursor {
+                        display: none;
+                        color: #00ff00;
+                        font-weight: 700;
+                        margin-left: 6px;
+                        }
+
+                        /* Only show + animate while the input is focused */
+                        .input-group input:focus + .blink-cursor {
+                        display: inline-block;
+                        animation: blink 1s steps(2, start) infinite;
+                        }
+
+                        /* Blink animation */
+                        @keyframes blink {
+                        0%, 49% { opacity: 1; }
+                        50%, 100% { opacity: 0; }
+                        }
+
         </style>
 </head>
 
@@ -233,14 +267,30 @@
                         </div>
 
                         <form id="accessForm" autocomplete="off" onsubmit="event.preventDefault(); searchFile();">
-                                <div class="input-group">
-                                        <label for="fileInput">ENTER FILE DESIGNATION:</label>
-                                        <input type="text" id="fileInput" placeholder="XXXX-XXXXXX" maxlength="20" autocomplete="off" spellcheck="false"
-                                                autocapitalize="off" autocorrect="off" inputmode="latin" />
-                                </div>
-                                <button class="search-btn" type="submit">ACCESS FILE</button>
+                        <div class="input-group">
+                        <label for="fileInput">ENTER FILE DESIGNATION:</label>
+
+                        <!-- wrapper so we can place the blinking underscore right after the input -->
+                        <div class="input-wrapper">
+                        <input
+                                type="text"
+                                id="fileInput"
+                                placeholder="XXXX-XXXXXX"
+                                maxlength="20"
+                                autocomplete="off"
+                                spellcheck="false"
+                                autocapitalize="off"
+                                autocorrect="off"
+                                inputmode="latin"
+                        />
+                        <span class="blink-cursor" aria-hidden="true">_</span>
+                        </div>
+                        </div>
+
+                        <button class="search-btn" type="submit">ACCESS FILE</button>
                         </form>
                         <div id="errorMessage" class="error-message"></div>
+
                 </div>
 
                 <div id="fileView" class="file-container" style="display: none;">
