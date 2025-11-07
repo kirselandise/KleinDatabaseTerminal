@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Form 1120 — Hero Identification Form (HIF‑1120)</title>
+  <style>
+    :root{
+      --bg:#0f172a; /* slate-900 */
+      --panel:#0b1224; /* darker */
+      --ink:#e2e8f0; /* slate-200 */
+      --muted:#94a3b8; /* slate-400 */
+      --accent:#38bdf8; /* sky-400 */
+      --accent-2:#22d3ee; /* cyan-400 */
+      --danger:#ef4444;
+      --ok:#22c55e;
+      --card:#111827ee;
+      --border:#1f2937;
+      --badge:#334155aa;
+      --paper:#0b1224;
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 80% -10%, #1e293b 0%, #0f172a 60%) fixed,
+                  conic-gradient(from 200deg at 10% 10%, #0b1224, #0f172a);
+      color:var(--ink);
+    }
+    .container{max-width:1100px;margin:0 auto;padding:24px}
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(6px);
+      background: linear-gradient(180deg, #0b1224cc, #0b122400);
+    }
+    .mast{
+      display:grid; grid-template-columns: 80px 1fr auto; gap:16px;
+      align-items:center; padding:16px 0 12px; border-bottom:1px solid var(--border);
+    }
+    .seal{
+      width:72px; height:72px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #334155, #0f172a);
+      border:2px solid #475569; display:grid; place-items:center;
+      color:#cbd5e1; font-weight:700; letter-spacing:1px; font-size:10px;
+      text-align:center;
+    }
+    .seal span{font-size:18px; display:block; margin-bottom:2px}
+    .mast h1{margin:0; font-size:20px; letter-spacing:.06em; text-transform:uppercase}
+    .mast .meta{font-size:12px; color:var(--muted)}
+    .form-tag{justify-self:end; text-align:right}
+    .form-tag .form-no{font-weight:800; font-size:18px}
+    .badge{display:inline-block; padding:2px 8px; border:1px solid #475569; border-radius:999px; background:var(--badge); color:#cbd5e1; font-size:12px}
+
+    /* Cards */
+    .card{background:linear-gradient(180deg, #0c1327, #0a1022); border:1px solid var(--border); border-radius:16px; box-shadow:0 10px 30px #0005; overflow:hidden}
+    .card h2{margin:0 0 8px; font-size:16px; letter-spacing:.04em; text-transform:uppercase; color:#bae6fd}
+    .card .body{padding:18px}
+    .grid{display:grid; gap:12px}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:920px){.grid.cols-2,.grid.cols-3{grid-template-columns:1fr}}
+
+    label{font-size:12px; color:#cbd5e1; letter-spacing:.02em}
+    .req::after{content:" *"; color:var(--accent)}
+    input[type="text"], input[type="date"], input[type="number"], textarea, select{
+      width:100%;
+      background:#0a1020; color:var(--ink);
+      border:1px solid #243043; border-radius:10px;
+      padding:10px 12px; font-size:14px; outline:none;
+    }
+    textarea{min-height:84px; resize:vertical}
+    .help{font-size:12px; color:var(--muted)}
+
+    .section{margin-top:20px}
+
+    .controls{position:sticky; bottom:14px; z-index:4; margin-top:18px}
+    .toolbar{display:flex; flex-wrap:wrap; gap:10px; padding:12px; border:1px dashed #334155; border-radius:12px; background:#0c1327aa; backdrop-filter:blur(6px)}
+    .toolbar button{
+      padding:10px 12px; border-radius:10px; border:1px solid #334155;
+      background:linear-gradient(180deg, #0e152b, #0a0f20); color:#e2e8f0; cursor:pointer;
+    }
+    .toolbar button:hover{border-color:#64748b}
+    .toolbar .primary{border-color:#0ea5e9; box-shadow:0 0 0 1px #0ea5e944 inset}
+
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    @media (max-width:720px){.row{grid-template-columns:1fr}}
+
+    .inline{display:flex; gap:10px; align-items:center}
+
+    /* Official ornamentation */
+    .watermark{position:fixed; inset:0; pointer-events:none; display:grid; place-items:center; opacity:.06; font-size:120px; font-weight:900; letter-spacing:.2em; text-transform:uppercase}
+    .barcode{height:38px; width:220px; background: repeating-linear-gradient(90deg,#94a3b8 0 3px, transparent 3px 6px); opacity:.35; border:1px solid #94a3b844; border-radius:6px}
+    .qr{width:70px; height:70px; background:linear-gradient(45deg,#1f2937,#0b1224); border:1px solid #334155; border-radius:6px; display:grid; place-items:center; color:#64748b; font-size:10px}
+
+    /* Tables for lists */
+    .mini-table{width:100%; border-collapse:collapse; font-size:14px}
+    .mini-table th,.mini-table td{border:1px solid #243043; padding:8px 10px}
+    .mini-table th{background:#0f1a34; color:#93c5fd; text-align:left}
+
+    /* Print */
+    @media print{
+      body{background:white; color:black}
+      header,.controls,.watermark{display:none}
+      .card{border:1px solid #999; box-shadow:none}
+      .container{max-width:none}
+      input, textarea, select{background:white; color:black; border-color:#999}
+    }
+  </style>
+</head>
+<body>
+  <div class="watermark">CONFIDENTIAL</div>
+  <header>
+    <div class="container mast">
+      <div class="seal" aria-hidden="true"><span>DM</span>DPT. META</div>
+      <div>
+        <h1>Department of Metahuman Affairs</h1>
+        <div class="meta">Hero Identification Form — HIF‑1120 <span aria-hidden="true">•</span> Rev. Nov 2025 <span aria-hidden="true">•</span> OMB No. 0000-1120</div>
+      </div>
+      <div class="form-tag">
+        <div class="form-no">FORM 1120</div>
+        <div class="badge">Hero Registration Division</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" role="main">
+
+    <section class="card section" aria-labelledby="ident">
+      <div class="body">
+        <div class="row" style="align-items:center">
+          <div class="inline" aria-hidden="true">
+            <div class="barcode" title="Document Control Code"></div>
+            <div class="qr">QR CODE</div>
+          </div>
+          <p class="help" style="margin:0 0 0 auto; text-align:right">Instructions: Complete all required fields (✱). Use block letters. Attach supporting documents as needed. Submissions are subject to verification.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Basic Information -->
+    <section class="card section" aria-labelledby="basic">
+      <div class="body">
+        <h2 id="basic">Section A — Basic Information</h2>
+        <div class="grid cols-3">
+          <div>
+            <label class="req" for="heroCode">Hero Code Name</label>
+            <input id="heroCode" name="heroCode" type="text" required placeholder="e.g., Night Lancer" />
+          </div>
+          <div>
+            <label class="req" for="legalName">Legal Name</label>
+            <input id="legalName" name="legalName" type="text" required placeholder="e.g., Jordan Reyes" />
+          </div>
+          <div>
+            <label class="req" for="pronouns">Pronouns</label>
+            <input id="pronouns" name="pronouns" type="text" list="pronounList" required placeholder="they/them" />
+            <datalist id="pronounList">
+              <option value="she/her"></option>
+              <option value="he/him"></option>
+              <option value="they/them"></option>
+              <option value="she/they"></option>
+              <option value="he/they"></option>
+            </datalist>
+          </div>
+          <div>
+            <label class="req" for="age">Age</label>
+            <input id="age" name="age" type="number" min="0" max="300" required />
+          </div>
+          <div>
+            <label class="req" for="dob">Date of Birth</label>
+            <input id="dob" name="dob" type="date" required />
+          </div>
+          <div>
+            <label for="species">Species</label>
+            <input id="species" name="species" type="text" placeholder="Human, Mutant, Alien…" />
+          </div>
+          <div>
+            <label for="nationality">Nationality</label>
+            <input id="nationality" name="nationality" type="text" />
+          </div>
+          <div>
+            <label for="ethnicity">Ethnicity</label>
+            <input id="ethnicity" name="ethnicity" type="text" />
+          </div>
+          <div>
+            <label for="hwb">Height / Weight / Build</label>
+            <input id="hwb" name="hwb" type="text" placeholder="5'11" 180lb athletic" />
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="visual">Visual Description</label>
+            <textarea id="visual" name="visual" placeholder="Costume colors, distinguishing marks, notable features…" maxlength="600"></textarea>
+            <div class="help"><span id="visualCount">0</span>/600</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Affiliations -->
+    <section class="card section" aria-labelledby="affil">
+      <div class="body">
+        <h2 id="affil">Section B — Affiliations & Background</h2>
+        <div class="grid cols-3">
+          <div>
+            <label for="school">School</label>
+            <input id="school" name="school" type="text" />
+          </div>
+          <div>
+            <label for="occupation">Occupation</label>
+            <input id="occupation" name="occupation" type="text" />
+          </div>
+          <div>
+            <label for="ward">Operating Ward / District</label>
+            <input id="ward" name="ward" type="text" placeholder="Ward 7, Old Harbor, etc." />
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="associates">Known Associates</label>
+            <textarea id="associates" name="associates" placeholder="List allies, mentors, teams…"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="rivals">Known Rivals</label>
+            <textarea id="rivals" name="rivals" placeholder="List nemeses, hostile orgs…"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Powers & Abilities -->
+    <section class="card section" aria-labelledby="powers">
+      <div class="body">
+        <h2 id="powers">Section C — Powers & Abilities</h2>
+        <div class="grid cols-3">
+          <div>
+            <label class="req" for="primaryPower">Primary Power Set</label>
+            <input id="primaryPower" name="primaryPower" type="text" required />
+          </div>
+          <div>
+            <label for="secondaryPowers">Secondary Powers</label>
+            <input id="secondaryPowers" name="secondaryPowers" type="text" />
+          </div>
+          <div>
+            <label for="origin">Power Origin</label>
+            <select id="origin" name="origin">
+              <option value="">— Select —</option>
+              <option>Mutation</option>
+              <option>Technology</option>
+              <option>Training</option>
+              <option>Artifact</option>
+              <option>Divine</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="weaknesses">Weaknesses / Limitations</label>
+            <textarea id="weaknesses" name="weaknesses" placeholder="e.g., Kryptonite, silver, concentration limits…"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="skills">Notable Skills</label>
+            <textarea id="skills" name="skills" placeholder="Martial arts, languages, hacking…"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="equipment">Equipment</label>
+            <textarea id="equipment" name="equipment" placeholder="Gadgets, armor, vehicles, artifacts…"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Personality & Ethics -->
+    <section class="card section" aria-labelledby="ethics">
+      <div class="body">
+        <h2 id="ethics">Section D — Personality & Ethics</h2>
+        <div class="grid cols-3">
+          <div style="grid-column:1/-1">
+            <label for="personality">Personality</label>
+            <textarea id="personality" name="personality" placeholder="Temperament, quirks, demeanor…"></textarea>
+          </div>
+          <div>
+            <label for="moralCode">Moral Code</label>
+            <input id="moralCode" name="moralCode" type="text" placeholder="e.g., Lawful Good, Personal Code" />
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="values">Values & Motivations</label>
+            <textarea id="values" name="values" placeholder="What drives them? What do they protect?"></textarea>
+          </div>
+          <div>
+            <label for="obedience">Obedience Level</label>
+            <input id="obedience" name="obedience" type="range" min="0" max="100" value="50" />
+            <div class="help">0 = rogue / independent • 100 = fully compliant</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Standing & Record -->
+    <section class="card section" aria-labelledby="record">
+      <div class="body">
+        <h2 id="record">Section E — Standing & Record</h2>
+        <div class="grid cols-3">
+          <div>
+            <label for="registration">Registration Status</label>
+            <select id="registration" name="registration">
+              <option value="">— Select —</option>
+              <option>Publicly Registered</option>
+              <option>Provisional</option>
+              <option>Unregistered</option>
+              <option>Wanted</option>
+            </select>
+          </div>
+          <div>
+            <label for="publicRecognition">Public Recognition</label>
+            <select id="publicRecognition" name="publicRecognition">
+              <option value="">— Select —</option>
+              <option>Unknown</option>
+              <option>Local</option>
+              <option>Regional</option>
+              <option>National</option>
+              <option>Global</option>
+            </select>
+          </div>
+          <div>
+            <label for="mediaRecognition">Media Recognition</label>
+            <select id="mediaRecognition" name="mediaRecognition">
+              <option value="">— Select —</option>
+              <option>None</option>
+              <option>Occasional Mentions</option>
+              <option>Regular Coverage</option>
+              <option>Celebrity</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="incidents">Notable Incidents</label>
+            <textarea id="incidents" name="incidents" placeholder="Dates, locations, short summaries…"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="victories">Notable Victories</label>
+            <textarea id="victories" name="victories" placeholder="Major wins, rescues, thwarted threats…"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="criminal">Criminal Record</label>
+            <textarea id="criminal" name="criminal" placeholder="Charges, dates, jurisdictions…"></textarea>
+          </div>
+          <div style="grid-column:1/-1">
+            <label for="pardons">Pardons</label>
+            <textarea id="pardons" name="pardons" placeholder="Issuing body, scope, conditions…"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certification -->
+    <section class="card section" aria-labelledby="cert">
+      <div class="body">
+        <h2 id="cert">Section F — Certification</h2>
+        <div class="grid cols-2">
+          <div>
+            <label for="sig">Applicant Signature</label>
+            <input id="sig" name="sig" type="text" placeholder="Type full legal name" />
+          </div>
+          <div>
+            <label for="dateSigned">Date</label>
+            <input id="dateSigned" name="dateSigned" type="date" />
+          </div>
+        </div>
+        <div class="grid cols-2" style="margin-top:10px">
+          <div>
+            <label for="officer">Intake Officer</label>
+            <input id="officer" name="officer" type="text" placeholder="(for official use)" />
+          </div>
+          <div>
+            <label for="caseNo">Case Number</label>
+            <input id="caseNo" name="caseNo" type="text" placeholder="HIF-1120-YYYY-#####" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="toolbar">
+        <button class="primary" id="saveBtn" type="button">Save to Browser</button>
+        <button id="loadBtn" type="button">Load Saved</button>
+        <button id="exportBtn" type="button">Export JSON</button>
+        <button id="importBtn" type="button">Import JSON</button>
+        <button id="printBtn" type="button">Print / Save as PDF</button>
+        <span class="help" style="margin-left:auto">Data stays on your device unless you export it.</span>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // --- Character counter for visual description
+    const visual = document.getElementById('visual');
+    const visualCount = document.getElementById('visualCount');
+    visual.addEventListener('input', ()=>{ visualCount.textContent = visual.value.length; });
+
+    // --- Utilities to serialize/deserialize the form
+    function getAllFields(){
+      return Array.from(document.querySelectorAll('input, textarea, select'))
+        .filter(el=>el.id || el.name);
+    }
+    function formToObject(){
+      const obj={};
+      for(const el of getAllFields()){
+        const key = el.name || el.id;
+        obj[key] = (el.type === 'range' || el.type === 'number') ? Number(el.value) || 0 : el.value;
+      }
+      return obj;
+    }
+    function objectToForm(obj){
+      for(const el of getAllFields()){
+        const key = el.name || el.id;
+        if(obj[key] !== undefined){ el.value = obj[key]; }
+      }
+      // update counters
+      visualCount.textContent = visual.value.length;
+    }
+
+    // --- Local storage save & load
+    const STORAGE_KEY = 'hif1120.v1';
+    document.getElementById('saveBtn').addEventListener('click', ()=>{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(formToObject()));
+      toast('Saved to this browser.');
+    });
+    document.getElementById('loadBtn').addEventListener('click', ()=>{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw){ toast('No saved data found.', true); return; }
+      objectToForm(JSON.parse(raw));
+      toast('Loaded saved data.');
+    });
+
+    // --- Export / Import JSON
+    document.getElementById('exportBtn').addEventListener('click', ()=>{
+      const a=document.createElement('a');
+      const blob=new Blob([JSON.stringify(formToObject(), null, 2)],{type:'application/json'});
+      a.href=URL.createObjectURL(blob);
+      a.download='HIF-1120.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+    document.getElementById('importBtn').addEventListener('click', async ()=>{
+      const inp=document.createElement('input'); inp.type='file'; inp.accept='.json,application/json';
+      inp.onchange=()=>{
+        const file=inp.files[0]; if(!file) return;
+        const reader=new FileReader();
+        reader.onload=()=>{ try{ objectToForm(JSON.parse(reader.result)); toast('Imported file.'); } catch(e){ toast('Invalid JSON.', true);} };
+        reader.readAsText(file);
+      };
+      inp.click();
+    });
+
+    // --- Print
+    document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+
+    // --- Simple toast
+    function toast(msg, error){
+      const t=document.createElement('div');
+      t.textContent=msg;
+      t.style.position='fixed'; t.style.right='16px'; t.style.bottom='16px';
+      t.style.background= error ? '#7f1d1d' : '#052e49';
+      t.style.color='#e2e8f0'; t.style.padding='10px 12px'; t.style.border='1px solid #334155';
+      t.style.borderRadius='10px'; t.style.zIndex=20; t.style.boxShadow='0 8px 24px #0006';
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 2200);
+    }
+
+    // --- Prefill date signed with today
+    (function(){
+      const d = new Date();
+      const iso = d.toISOString().slice(0,10);
+      const ds = document.getElementById('dateSigned');
+      if(ds && !ds.value) ds.value = iso;
+    })();
+  </script>
+</body>
+</html>
