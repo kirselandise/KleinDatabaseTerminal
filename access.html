@@ -243,6 +243,12 @@
                                 cursor: url("./text.cur"), auto;
                         }
 
+                        .input-group input,
+                        .input-group input:hover,
+                        .input-group input:focus {
+                        cursor: url("./text.cur") 0 0, url("./text.png") 0 0, text;
+                        }
+
                         /* Only show + animate while the input is focused */
                         .input-group input:focus+.blink-cursor {
                                 display: inline-block;
